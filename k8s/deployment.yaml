@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: optmizejvm-deployment
+  namespace: optmizejvm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: optmizejvm
+  template:
+    metadata:
+      labels:
+        app: optmizejvm
+    spec:
+      containers:
+        - name: optmizejvm
+          image: optmizejvm:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod
+            - name: SA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mssql-sa-secret
+                  key: SA_PASSWORD
+            - name: DB_HOST
+              value: mssql-service.sqlserver.svc.cluster.local
+            - name: DB_PORT
+              value: "1433"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
