@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mssql-service
+  namespace: sqlserver
+spec:
+  type: ClusterIP  # Pode ser alterado para NodePort se desejar acesso externo
+  ports:
+    - port: 1433
+      targetPort: 1433
+      protocol: TCP
+      name: mssql
+  selector:
+    app: mssql
